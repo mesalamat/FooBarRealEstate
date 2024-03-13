@@ -1,0 +1,302 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<style>
+    .main-container {
+        display: flex;
+    }
+    .form-container {
+        width: 50%;
+        margin: 0 auto;
+        text-align: center;
+        background-color: whitesmoke;
+        border-radius: 5px;
+        border: #3d4148 solid 1px;
+
+    }
+    #uploadForm {
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #uploadForm div {
+        margin-bottom: 10px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+    }
+
+    .fileInputDiv {
+        padding-top: 20px;
+    }
+
+
+    .remove-button{
+        position: absolute;
+        top: 0;
+        right: 28%;
+        border: rgb(61,65,72) solid 1px;
+        border-radius: 5%;
+        background-color: rgba(61,65,72, 0.5);
+        outline: none;
+        color: white;
+        text-decoration: none;
+    }
+    .remove-button:hover{
+        background-color: rgba(61,65,72, 1);
+    }
+    .additional-container {
+        flex-grow: 1; /* Allow the additional container to grow and fill remaining space */
+        border: #3d4148 solid 3px;
+    }
+
+    .nameLabel {
+        padding-bottom: 10px;
+    }
+
+    .additional-container {
+        max-width: 300px;
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #editor-container{
+        margin-top: 20px;
+        border: none;
+    }
+    .ql-editor{
+        max-height: 200px;
+        min-height: 200px;
+    }
+
+
+
+    input[type="text"],
+    select,
+    input[type="file"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Ensure padding and border are included in the width */
+    }
+    input[type ="submit"]:hover {
+        background-color: #3d4148;
+    }
+
+    input[type ="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #627273;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Foo Bar Real Estate</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/carousel.css">
+    <!--- Ajax Awesome Font for Icons ---->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!--- Quill for an advanced text editor ---->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+</head>
+<body>
+<!-- <div class="spacer">
+  <nav>
+    <ul>
+      <li><button class="button" type="button">Language</button></li>
+    </ul>
+  </nav>
+</div> -->
+<header class="header">
+    <div class="logo">
+        <a href="#"><img src="/images/logo.png" alt="Logo" sizes="512x512"></a>
+    </div>
+    <nav class="navigation">
+        <ul>
+            <li><a href="#">Buy</a></li>
+            <li><a href="#">Rent</a></li>
+            <li><a href="#">Commercial</a></li>
+            <!-- <li><a href="/addproperty">List Property</a></li> -->
+            <!-- Add more navigation links as needed -->
+        </ul>
+    </nav>
+    <div class="search">
+        <label>
+            <input type="text" placeholder="Search for properties">
+        </label>
+        <button type="submit">Search</button>
+    </div>
+    <!-- Add additional features like user account options or language selection here -->
+</header>
+
+<h1 class="h1">List Property</h1>
+
+<div class="carousel-container">
+    <div class="carousel">
+        <div class="carousel-inner">
+            <!-- Script is Gonna add stuff here -->
+        </div>
+        <a class="carousel-control prev" href="#">&lt;</a>
+        <a class="carousel-control next" href="#">&gt;</a>
+    </div>
+</div>
+
+<div class="main-container">
+    <!--<div class="additional-container">
+         Additional content here
+    </div>-->
+    <div class="form-container">
+        <form onsubmit='return false' enctype="multipart/form-data">
+            <div>
+                <label for="name" class="nameLabel">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <hr>
+            <div class="category-container">
+                <label for="areaInput">Area</label>
+                <input type="text" id="areaInput" name="areaInput" pattern="[0-9.]*">
+                <label for="category">Unit:</label>
+                <select id="category" name="category">
+                    <option th:each="unit : ${units}" th:value="option + ${unitStat.index}" th:text="${unit.getAbbreviation()}"></option>
+                </select>
+            </div>
+            <div class="fileInputDiv">
+                <label for="fileInput">Choose Images:</label>
+                <input id="fileInput" multiple type=file name="image"/>
+                <input id="uploadButton" type="button" value="Upload"/>
+            </div>
+            <label for="editor-container">Page Content</label>
+            <div id="editor-container">
+                <!-- Editor will be initialized here -->
+            </div>
+
+
+        </form>
+    </div>
+    <!--<div class="additional-container">
+         Additional content here
+    </div>-->
+</div>
+
+</body>
+
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    var quill = new Quill('#editor-container', {
+        theme: 'snow' // Specify the theme ('snow' or 'bubble')
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        const categoryInput = document.getElementById("areaInput");
+
+        categoryInput.addEventListener("input", function () {
+            // Remove any non-numeric and non-decimal characters
+            this.value = this.value.replace(/[^0-9.]/g, "");
+
+            // Remove multiple decimal points
+            if (this.value.split(".").length > 2) {
+                this.value = this.value.substring(0, this.value.lastIndexOf("."));
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const prevButton = document.querySelector(".carousel-control.prev");
+        const nextButton = document.querySelector(".carousel-control.next");
+        const carouselInner = document.querySelector(".carousel-inner");
+        const fileInput = document.getElementById("fileInput");
+        const uploadButton = document.getElementById("uploadButton");
+
+        let currentIndex = 0;
+
+        function goToSlide(index) {
+            currentIndex = index;
+            const translateValue = -currentIndex * 100 + "%";
+            carouselInner.style.transform = "translateX(" + translateValue + ")";
+        }
+
+        function createRemoveButton() {
+            const removeButton = document.createElement("button");
+            removeButton.classList.add("remove-button");
+            removeButton.textContent = "Remove";
+            return removeButton;
+        }
+
+        prevButton.addEventListener("click", function () {
+            event.preventDefault();
+            currentIndex = (currentIndex - 1 + carouselInner.children.length) % carouselInner.children.length;
+            goToSlide(currentIndex);
+        });
+
+        nextButton.addEventListener("click", function () {
+            event.preventDefault();
+            currentIndex = (currentIndex + 1) % carouselInner.children.length;
+            goToSlide(currentIndex);
+        });
+
+        uploadButton.addEventListener("click", function () {
+            const files = fileInput.files;
+            if (files.length === 0) {
+                alert("Please select an image.");
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                reader.readAsDataURL(files[i]);
+                const formData = new FormData();
+
+                reader.onload = function (event) {
+                    formData.append("image", files[i]);
+                    fetch("/images", {
+                        method: "post",
+                        body: formData,
+                    }).then((response) => response.json()).then((data) => {
+                        //console.log(data)
+                        const img = document.createElement("img");
+                        img.src = "/image/data/" + data.id;
+                        img.alt = "Uploaded Image";
+                        const carouselItem = document.createElement("div");
+                        carouselItem.classList.add("carousel-item");
+                        carouselItem.appendChild(img);
+
+                        const removeButton = createRemoveButton();
+                        removeButton.addEventListener("click", function () {
+                            fetch("/image/" + data.id, {
+                                method: "DELETE"
+                            }).catch((error) => ("Something went wrong!", error));
+
+                            carouselInner.removeChild(carouselItem);
+                            currentIndex = Math.max(0, currentIndex - 1);
+                            goToSlide(currentIndex);
+                        });
+                        const i = document.createElement("i");
+                        i.classList.add("fas","fa-trash-alt")
+                        removeButton.appendChild(i);
+                        carouselItem.appendChild(removeButton);
+                        carouselInner.appendChild(carouselItem);
+                        // Update currentIndex to newly added image index
+                        currentIndex = carouselInner.children.length - 1;
+                        goToSlide(currentIndex);
+                        //fileInput.value = "";
+                    }).catch((error) => ("Something went wrong!", error));
+                };
+            }
+            fileInput.value = "";
+
+
+        });
+    });
+</script>
+</html>

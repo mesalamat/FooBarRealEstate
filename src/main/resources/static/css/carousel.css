@@ -1,0 +1,65 @@
+.carousel-container {
+    max-width: 1200px; /* Adjust as needed */
+    margin: 0 auto; /* Center the carousel horizontally */
+    padding: 20px;
+    max-height: 400px;
+    text-align: center;
+}
+
+.carousel {
+    display: block;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-inner {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carousel-item {
+    flex: 0 0 100%;
+    position: relative;
+}
+
+
+.carousel img {
+    width: 100%; /* Ensure images fit within their container */
+    max-height: 400px;
+    height: auto; /* Maintain aspect ratio */
+    object-fit: scale-down;
+}
+
+
+.category-container {
+    padding-top: 20px;
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Align items vertically */
+}
+
+.category-container label,
+.category-container input,
+.category-container select {
+    margin-right: 10px; /* Add spacing between elements */
+}
+
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    color: white;
+    text-decoration: none;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.carousel-control.prev {
+    left: 10px;
+}
+
+.carousel-control.next {
+    right: 10px;
+}
