@@ -6,8 +6,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Data
@@ -30,6 +29,12 @@ public class Property {
     @Column(name = "image", nullable = false)
     private List<UUID> images;
 
+    public Property() {
+    }
+    public Property(String name){
+        this();
+        this.name = name;
+    }
 
 
     @Getter(AccessLevel.PUBLIC)

@@ -45,32 +45,32 @@ public class ImageController {
     }
 
 
-    @GetMapping("/image/{id}")
+    @GetMapping("/uploads/image/{id}")
     public EntityModel<Image> getImageById(@PathVariable UUID id) throws IOException {
         Image stats = repository.findAll().stream().filter(stats1 -> stats1.getId().equals(id)).findAny().orElse(null);
         return assembler.toModel(stats);
     }
-
-    @DeleteMapping("/image/{id}")
+    
+    @DeleteMapping("/uploads/image/{id}")
     public ResponseEntity<Image> deleteImage(@PathVariable UUID id) throws IOException {
         Image stats = repository.findAll().stream().filter(stats1 -> stats1.getId().equals(id)).findAny().orElse(null);
         repository.deleteById(stats.getId());
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/images")
+    @GetMapping("/uploads/images")
     public CollectionModel<EntityModel<Image>> all(){
         List<EntityModel<Image>> allStats = repository.findAll().stream().map(assembler::toModel).collect(Collectors.toList());
         return CollectionModel.of(allStats, linkTo(methodOn(ImageController.class).all()).withSelfRel());
     }
 
-    @PostMapping("/images")
+    @PostMapping("/uploads/images")
     public ResponseEntity<Image> uploadImage(@RequestParam("image")MultipartFile file) throws IOException {
         return service.uploadImage(file);
     }
 
 
-    @GetMapping("/image/data/{id}")
+    @GetMapping("/uploads/image/data/{id}")
     public void showProductImage(@PathVariable UUID id,
                                  HttpServletResponse response) throws IOException {
         // Or whatever format you wanna use
