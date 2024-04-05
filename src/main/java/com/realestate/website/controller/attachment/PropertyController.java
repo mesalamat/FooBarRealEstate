@@ -37,6 +37,14 @@ public class PropertyController {
     public ModelAndView addProperty(){
         ModelAndView model = new ModelAndView("addproperty");
         model.addObject("units", Property.Unit.values());
+        model.addObject("types", Property.PropertyType.values());
+        return model;
+    }
+
+    @GetMapping("/properties")
+    public ModelAndView properties(){
+        ModelAndView model = new ModelAndView("properties");
+        model.addObject("properties", repository.findAll());
         return model;
     }
 

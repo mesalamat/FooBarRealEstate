@@ -74,8 +74,13 @@ public class ImageController {
     public void showProductImage(@PathVariable UUID id,
                                  HttpServletResponse response) throws IOException {
         // Or whatever format you wanna use
-
+        System.out.println(id);
         Image image = repository.findById(id).orElse(null);
+        if(image == null){
+            InputStream is = new ByteArrayInputStream("Image not found".getBytes());
+            IOUtils.copy(is, response.getOutputStream());
+            return;
+        }
         response.setContentType(image.getType());
         InputStream is = new ByteArrayInputStream(service.getImageData(id));
         IOUtils.copy(is, response.getOutputStream());

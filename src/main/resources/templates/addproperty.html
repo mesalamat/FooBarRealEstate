@@ -165,23 +165,27 @@
             </div>
             <hr>
             <div class="category-container">
-                <label for="areaInput">Area</label>
-                <input type="text" id="areaInput" name="areaInput" pattern="[0-9.]*">
+                <label for="area">Area</label>
+                <input type="text" id="area" name="area" pattern="[0-9.]*">
                 <label for="category">Unit:</label>
                 <select id="category" name="category">
-                    <option th:each="unit : ${units}" th:value="option + ${unitStat.index}" th:text="${unit.getAbbreviation()}"></option>
+                    <option th:each="unit : ${units}" th:value="${unit.name()}" th:text="${unit.getAbbreviation()}"  th:selected="${unitStat == 1}"></option>
+                </select>
+                <label for="type">Property Type:</label>
+                <select id="type" name="type">
+                    <option th:each="type : ${types}" th:value="${type.name()}" th:text="${type.getName()}"></option>
                 </select>
             </div>
             <div class="fileInputDiv">
                 <label for="fileInput">Choose Images:</label>
                 <input id="fileInput" multiple type=file name="image"/>
-                <input id="uploadButton" type="button" value="Upload"/>
+                <input id="uploadButton" type="button" value="Upload Images"/>
             </div>
             <label for="editor-container">Page Content</label>
             <div id="editor-container">
                 <!-- Editor will be initialized here -->
             </div>
-
+            <input id="submitButton" type="submit" value="Submit Property"/>
 
         </form>
     </div>
@@ -198,9 +202,9 @@
         theme: 'snow' // Specify the theme ('snow' or 'bubble')
     });
     document.addEventListener("DOMContentLoaded", function () {
-        const categoryInput = document.getElementById("areaInput");
+        const areaInput = document.getElementById("area");
 
-        categoryInput.addEventListener("input", function () {
+        areaInput.addEventListener("input", function () {
             // Remove any non-numeric and non-decimal characters
             this.value = this.value.replace(/[^0-9.]/g, "");
 
@@ -217,6 +221,54 @@
         const carouselInner = document.querySelector(".carousel-inner");
         const fileInput = document.getElementById("fileInput");
         const uploadButton = document.getElementById("uploadButton");
+        const form = document.querySelector('form');
+        const images = [];
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Create FormData object from the form
+            const formData = new FormData(this);
+            const jsonData = {}; // Create an empty object to store form data as JSON
+
+            // Loop through form elements and add their values to jsonData object
+            formData.delete("image");
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+
+            });
+            jsonData["images"] = images;
+
+            // Convert jsonData to JSON string
+            const jsonString = JSON.stringify(jsonData);
+            console.log(jsonString);
+            // Define the API endpoint URL
+            const url = window.location.origin + '/api/properties';
+
+            // Send a POST request to the API endpoint with JSON data
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonString
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.log(response.statusText + ":" + response.status);
+                    }
+                    return response.json(); // Parse response JSON
+                })
+                .then(data => {
+                    // Handle successful response
+                    console.log('Success:', data);
+                    // Optionally, perform any additional actions after successful submission
+                })
+                .catch(error => {
+                    // Handle errors
+                    console.error('Error:', error);
+                    // Optionally, perform any additional error handling
+                });
+        });
 
         let currentIndex = 0;
 
@@ -259,21 +311,23 @@
 
                 reader.onload = function (event) {
                     formData.append("image", files[i]);
-                    fetch("/images", {
+
+                    fetch("/uploads/images", {
                         method: "post",
                         body: formData,
                     }).then((response) => response.json()).then((data) => {
                         //console.log(data)
                         const img = document.createElement("img");
-                        img.src = "/image/data/" + data.id;
+                        img.src = "/uploads/image/data/" + data.id;
                         img.alt = "Uploaded Image";
+                        images.push(data.id);
                         const carouselItem = document.createElement("div");
                         carouselItem.classList.add("carousel-item");
                         carouselItem.appendChild(img);
 
                         const removeButton = createRemoveButton();
                         removeButton.addEventListener("click", function () {
-                            fetch("/image/" + data.id, {
+                            fetch("/uploads/image/" + data.id, {
                                 method: "DELETE"
                             }).catch((error) => ("Something went wrong!", error));
 

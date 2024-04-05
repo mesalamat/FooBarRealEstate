@@ -22,7 +22,7 @@ public class Image {
 
 
     @Lob
-    @Column(length = 1000)
+    @Column(length = 2000)
     private byte[] imageData;
 
     private boolean isPrimary;

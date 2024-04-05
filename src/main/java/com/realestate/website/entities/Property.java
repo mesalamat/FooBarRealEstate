@@ -1,6 +1,7 @@
 package com.realestate.website.entities;
 
 
+import com.realestate.website.entities.attachment.Image;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -19,9 +20,12 @@ public class Property {
     private String description;
 
 
+    private PropertyType type = PropertyType.APARTMENT;
+
     private int bedRooms;
     private int bathRooms;
     private double area;
+    private double price;
     private Unit unit;
 
     @ElementCollection(targetClass = UUID.class, fetch = FetchType.EAGER)
@@ -34,6 +38,17 @@ public class Property {
     public Property(String name){
         this();
         this.name = name;
+    }
+    public Property(String name, Unit unit){
+        this();
+        this.name = name;
+        this.unit = unit;
+    }
+    public Property(String name, Unit unit, List<UUID> images){
+        this();
+        this.name = name;
+        this.unit = unit;
+        this.images = images;
     }
 
 
@@ -48,6 +63,20 @@ public class Property {
         Unit(String abbreviation){
             this.abbreviation = abbreviation;
         }
+
+    }
+
+    @Getter(AccessLevel.PUBLIC)
+    public enum PropertyType{
+
+        APARTMENT("Apartment"), HOUSE("House"), COMMERCIAL("Commercial");
+
+
+        PropertyType(String name){
+            this.name = name;
+        }
+
+        private String name;
 
     }
 
