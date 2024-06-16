@@ -38,6 +38,8 @@ public class PropertyController {
         ModelAndView model = new ModelAndView("addproperty");
         model.addObject("units", Property.Unit.values());
         model.addObject("types", Property.PropertyType.values());
+        model.addObject("intervals", Property.PaymentType.values());
+        model.addObject("ownerships", Property.OwnershipType.values());
         return model;
     }
 
@@ -51,6 +53,7 @@ public class PropertyController {
     @PostMapping("/api/properties")
     ResponseEntity<?> newPlayerStats(@RequestBody Property property){
         EntityModel<Property> responseModel = assembler.toModel(repository.save(property));
+        System.out.println(property.getUnit());
         return ResponseEntity.created(responseModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(responseModel);
     }
 

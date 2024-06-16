@@ -21,7 +21,8 @@ public class Property {
 
 
     private PropertyType type = PropertyType.APARTMENT;
-
+    private OwnershipType ownership = OwnershipType.FOR_RENT;
+    private PaymentType paymentType = PaymentType.MONTHLY;
     private int bedRooms;
     private int bathRooms;
     private double area;
@@ -73,6 +74,34 @@ public class Property {
 
 
         PropertyType(String name){
+            this.name = name;
+        }
+
+        private String name;
+
+    }
+
+    @Getter(AccessLevel.PUBLIC)
+    public enum OwnershipType{
+
+        FOR_RENT("For Rent"), FOR_SALE("For Sale");
+
+
+        OwnershipType(String name){
+            this.name = name;
+        }
+
+        private String name;
+
+    }
+
+    @Getter(AccessLevel.PUBLIC)
+    public enum PaymentType{
+
+        MONTHLY("Monthly"), QUARTERLY("Quarterly"), BI_ANNUAL("Biannual"), ANNUAL("Yearly"), ONCE("Once");
+
+
+        PaymentType(String name){
             this.name = name;
         }
 

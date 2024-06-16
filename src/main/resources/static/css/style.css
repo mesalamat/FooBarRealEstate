@@ -34,8 +34,9 @@ h1 {
 }
 
 .navigation{
-    left: 50%;
-    transform: translateX(-50%);
+    margin: 10px 10px 10px 25%;
+    width: 50%;
+    transform: translateX(-15%);
 }
 
 .navigation ul {

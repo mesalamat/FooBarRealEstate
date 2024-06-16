@@ -11,6 +11,7 @@
         .main-container {
             display: flex;
         }
+
         .form-container {
             width: 50%;
             margin: 0 auto;
@@ -20,6 +21,7 @@
             border: #3d4148 solid 1px;
 
         }
+
         #uploadForm {
             padding: 20px;
             background-color: #f5f5f5;
@@ -41,20 +43,22 @@
         }
 
 
-        .remove-button{
+        .remove-button {
             position: absolute;
             top: 0;
             right: 28%;
-            border: rgb(61,65,72) solid 1px;
+            border: rgb(61, 65, 72) solid 1px;
             border-radius: 5%;
-            background-color: rgba(61,65,72, 0.5);
+            background-color: rgba(61, 65, 72, 0.5);
             outline: none;
             color: white;
             text-decoration: none;
         }
-        .remove-button:hover{
-            background-color: rgba(61,65,72, 1);
+
+        .remove-button:hover {
+            background-color: rgba(61, 65, 72, 1);
         }
+
         .additional-container {
             flex-grow: 1; /* Allow the additional container to grow and fill remaining space */
             border: #3d4148 solid 3px;
@@ -73,15 +77,15 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        #editor-container{
+        #editor-container {
             margin-top: 20px;
             border: none;
         }
-        .ql-editor{
+
+        .ql-editor {
             max-height: 200px;
             min-height: 200px;
         }
-
 
 
         input[type="text"],
@@ -93,6 +97,7 @@
             border-radius: 4px;
             box-sizing: border-box; /* Ensure padding and border are included in the width */
         }
+
         input[type ="submit"]:hover {
             background-color: #3d4148;
         }
@@ -107,10 +112,11 @@
             cursor: pointer;
         }
 
-        .menu-container{
+        .menu-container {
             margin: 10px 10px 10px 25%;
             width: 50%;
         }
+
         /* Add CSS styles for the layout */
         .property-card {
             display: flex;
@@ -120,12 +126,12 @@
             border-radius: 5px;
             background-color: #f9f9f9;
             max-width: 50%;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
             transition: box-shadow 0.3s;
         }
 
         .property-card:hover {
-            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
         }
 
         .property-details {
@@ -139,17 +145,27 @@
             max-height: 200px; /* Adjust image height as needed */
             overflow: hidden;
         }
-        .property-image img{
+
+        .property-image img {
             width: 100%;
             height: auto;
         }
-        .important-details{
+
+        .sidebar-right{
+            float:right;
+            margin: 10px 10px 10px 25%;
+            width: 25%;
+        }
+
+        .important-details {
             display: contents;
         }
-        .important-details span{
+
+        .important-details span {
             /*margin-right: 10px;*/
         }
-        div.vertical-line{
+
+        div.vertical-line {
             width: 1px; /* Line width */
             transform: translateY(3px);
             margin-left: 10px;
@@ -160,9 +176,11 @@
         You can instead use position:absolute or display:inline-block
         if this fits better with your design */
         }
+
         .icon {
             margin-right: 2px; /* Add spacing between icon and text */
         }
+
         .property-price {
             font-weight: bold;
             color: #007bff;
@@ -193,21 +211,28 @@
 </header>
 <h1>Property List</h1>
 <div class="menu-container">
-<div th:each="property : ${properties}" class="property-card">
+    <div th:each="property : ${properties}" class="property-card">
 
-    <div class="property-details">
-        <h2 th:text="${property.getName()}"></h2>
-        <p th:text="${property.getDescription()}"></p>
-        <p class="important-details"><span th:text="${property.getType().getName()}"></span><div class="vertical-line"></div>
-        <i class="fas fa-bed icon "></i> <span th:text="${property.getBedRooms()}"></span> <i class="fas fa-toilet icon "></i> <span th:text="${property.getBathRooms()}"></span><div class="vertical-line"></div>
-        <span th:text="${property.getArea()} + ' ' + ${property.getUnit().getAbbreviation()}"></span></p>
-        <p class="property-price">Price: $<span th:text="${property.getPrice()}"></span></p>
-    </div>
-    <div class="property-image">
-        <!-- Assuming you have property images stored and accessible -->
-        <img th:if="!${property.images.isEmpty()}" th:src="@{http://localhost:8080/uploads/image/data/{id}(id=${property.images.get(0)})}">
+        <div class="property-details">
+            <h2 class="property-price" th:text="${'$' + property.getPrice() + ' ' + property.getPaymentType().getName()}"></h2>
+            <h3 th:text="${property.getName()}"></h3>
+            <p th:text="${property.getDescription()}"></p>
+            <p class="important-details"><span th:text="${property.getType().getName()}"></span>
+            <div class="vertical-line"></div>
+            <i class="fas fa-bed icon "></i> <span th:text="${property.getBedRooms()}"></span> <i
+                class="fas fa-toilet icon "></i> <span th:text="${property.getBathRooms()}"></span>
+            <div class="vertical-line"></div>
+            <span th:text="${property.getArea()} + ' ' + ${property.getUnit().getAbbreviation()}"></span></p>
+        </div>
+        <div class="property-image">
+            <!-- Assuming you have property images stored and accessible -->
+            <img th:if="!${property.images.isEmpty()}"
+                 th:src="@{http://localhost:8080/uploads/image/data/{id}(id=${property.images.get(0)})}">
+        </div>
     </div>
 </div>
+<div class="sidebar-right">
+<p>HELLO</p><span>AHHH</span>
 </div>
 </body>
 </html>

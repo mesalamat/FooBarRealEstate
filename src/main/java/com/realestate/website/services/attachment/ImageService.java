@@ -29,7 +29,7 @@ public class ImageService {
     @Autowired
     private ImageModelAssembler assembler;
 
-
+    
 
     public ResponseEntity<Image> uploadImage(MultipartFile multipartFile) throws IOException {
         Image existing;

@@ -33,6 +33,7 @@
 
 .category-container {
     padding-top: 20px;
+    margin-bottom: 40px;
     display: flex; /* Use flexbox for layout */
     align-items: center; /* Align items vertically */
 }
