@@ -6,6 +6,7 @@ import com.realestate.website.entities.attachment.ImageModelAssembler;
 import com.realestate.website.repositories.attachment.ImageRepository;
 import com.realestate.website.util.ImageUtil;
 import jakarta.transaction.Transactional;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -15,6 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,28 +33,34 @@ public class ImageService {
     @Autowired
     private ImageModelAssembler assembler;
 
-    
 
-    public ResponseEntity<Image> uploadImage(MultipartFile multipartFile) throws IOException {
-        Image existing;
-        if((existing = repository.findAll().stream().filter(image -> {
-            try {
-                return Arrays.equals(image.getImageData(), ImageUtil.compressImage(multipartFile.getBytes()));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }).findAny().orElse(null)) != null){
-            EntityModel<Image> responseModel = assembler.toModel(existing);
-            return ResponseEntity.ok(responseModel.getContent());
+    private final String uploadDirectory = "src/main/resources/static/userImages/";
+    private final Path UPLOAD_PATH = Path.of(uploadDirectory);
+
+
+    @SneakyThrows
+    public ResponseEntity<Image> saveImageToStorage(MultipartFile image){
+        UUID imageUUID = UUID.randomUUID();
+        String fileName = imageUUID.toString() + "_" + image.getName();
+        Path filePath = UPLOAD_PATH.resolve(fileName);
+        if(!UPLOAD_PATH.toFile().exists()){
+            Files.createDirectories(UPLOAD_PATH);
         }
-        EntityModel<Image> responseModel = assembler.toModel(repository.save(Image.builder().id(UUID.randomUUID()).type(multipartFile.getContentType()).imageData(ImageUtil.compressImage(multipartFile.getBytes())).build()));
+
+        Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        EntityModel<Image> responseModel = assembler.toModel(repository.save(Image.builder().id(imageUUID).fileName(fileName).type(image.getContentType()).build()));
+
         return ResponseEntity.created(responseModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(responseModel.getContent());
     }
 
+
+    @SneakyThrows
     @Transactional
-    public byte[] getImageData(UUID name) {
-        Optional<Image> dbImage = repository.findById(name);
-        return ImageUtil.decompressImage(dbImage.get().getImageData());
+    public byte[] getImageData(String fileName) {
+        Path imagePath = UPLOAD_PATH.resolve(fileName);
+        if(imagePath.toFile().exists()){
+            return Files.readAllBytes(imagePath);
+        }else return null;
     }
 
 }

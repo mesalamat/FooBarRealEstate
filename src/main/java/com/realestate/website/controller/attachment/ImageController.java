@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -59,6 +60,7 @@ public class ImageController {
     }
 
     @GetMapping("/uploads/images")
+
     public CollectionModel<EntityModel<Image>> all(){
         List<EntityModel<Image>> allStats = repository.findAll().stream().map(assembler::toModel).collect(Collectors.toList());
         return CollectionModel.of(allStats, linkTo(methodOn(ImageController.class).all()).withSelfRel());
@@ -66,23 +68,25 @@ public class ImageController {
 
     @PostMapping("/uploads/images")
     public ResponseEntity<Image> uploadImage(@RequestParam("image")MultipartFile file) throws IOException {
-        return service.uploadImage(file);
+        return service.saveImageToStorage(file);
     }
 
 
-    @GetMapping("/uploads/image/data/{id}")
-    public void showProductImage(@PathVariable UUID id,
+
+    @GetMapping("/uploads/image/dataByUUID/{uuid}")
+    public void showProductImage(@PathVariable UUID uuid,
                                  HttpServletResponse response) throws IOException {
-        // Or whatever format you wanna use
-        System.out.println(id);
-        Image image = repository.findById(id).orElse(null);
-        if(image == null){
-            InputStream is = new ByteArrayInputStream("Image not found".getBytes());
-            IOUtils.copy(is, response.getOutputStream());
-            return;
-        }
-        response.setContentType(image.getType());
-        InputStream is = new ByteArrayInputStream(service.getImageData(id));
+
+        Optional<Image> image = repository.findById(uuid);
+        if(!image.isPresent())return;
+
+        InputStream is = new ByteArrayInputStream(service.getImageData(image.get().getFileName()));
+        IOUtils.copy(is, response.getOutputStream());
+    }
+    @GetMapping("/uploads/image/data/{fileName}")
+    public void showProductImage(@PathVariable String fileName,
+                                 HttpServletResponse response) throws IOException {
+        InputStream is = new ByteArrayInputStream(service.getImageData(fileName));
         IOUtils.copy(is, response.getOutputStream());
     }
 

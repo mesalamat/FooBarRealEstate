@@ -21,9 +21,7 @@ public class Image {
     private UUID id;
 
 
-    @Lob
-    @Column(length = 4000)
-    private byte[] imageData;
+    private String fileName;
 
     private boolean isPrimary;
 

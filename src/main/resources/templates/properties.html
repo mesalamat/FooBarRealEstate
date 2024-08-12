@@ -227,7 +227,7 @@
         <div class="property-image">
             <!-- Assuming you have property images stored and accessible -->
             <img th:if="!${property.images.isEmpty()}"
-                 th:src="@{http://localhost:8080/uploads/image/data/{id}(id=${property.images.get(0)})}">
+                 th:src="@{http://localhost:8080/uploads/image/dataByUUID/{fileName}(fileName=${property.images.get(0)})}">
         </div>
     </div>
 </div>
