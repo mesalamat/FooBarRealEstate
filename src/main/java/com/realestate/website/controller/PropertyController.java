@@ -1,17 +1,13 @@
-package com.realestate.website.controller.attachment;
+package com.realestate.website.controller;
 
 import com.realestate.website.entities.Property;
 import com.realestate.website.entities.PropertyModelAssembler;
-import com.realestate.website.entities.attachment.Image;
-import com.realestate.website.repositories.PropertyLoader;
 import com.realestate.website.repositories.PropertyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 

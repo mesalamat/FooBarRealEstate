@@ -1,8 +1,6 @@
 package com.realestate.website.entities;
 
-import com.realestate.website.controller.attachment.ImageController;
-import com.realestate.website.controller.attachment.PropertyController;
-import com.realestate.website.entities.attachment.Image;
+import com.realestate.website.controller.PropertyController;
 import lombok.SneakyThrows;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
