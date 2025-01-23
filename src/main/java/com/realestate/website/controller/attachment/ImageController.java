@@ -38,14 +38,6 @@ public class ImageController {
     private ImageService service;
 
 
-    @GetMapping("/imageUpload")
-    public ModelAndView imageUpload(){
-        ModelAndView model = new ModelAndView("upload");
-        model.addObject("message", "Aloha");
-        return model;
-    }
-
-
     @GetMapping("/uploads/image/{id}")
     public EntityModel<Image> getImageById(@PathVariable UUID id) throws IOException {
         Image stats = repository.findAll().stream().filter(stats1 -> stats1.getId().equals(id)).findAny().orElse(null);
@@ -60,7 +52,6 @@ public class ImageController {
     }
 
     @GetMapping("/uploads/images")
-
     public CollectionModel<EntityModel<Image>> all(){
         List<EntityModel<Image>> allStats = repository.findAll().stream().map(assembler::toModel).collect(Collectors.toList());
         return CollectionModel.of(allStats, linkTo(methodOn(ImageController.class).all()).withSelfRel());

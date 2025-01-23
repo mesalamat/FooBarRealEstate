@@ -23,6 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
+@CrossOrigin()
 public class PropertyController {
 
 
@@ -33,7 +34,11 @@ public class PropertyController {
 
 
 
+    /**
+     * @deprecated Replacing all Frontend on Spring with Frontend in React
+     */
     @GetMapping("/addProperty")
+    @Deprecated(forRemoval = true)
     public ModelAndView addProperty(){
         ModelAndView model = new ModelAndView("addproperty");
         model.addObject("units", Property.Unit.values());
@@ -43,6 +48,10 @@ public class PropertyController {
         return model;
     }
 
+    /**
+     * @deprecated Replacing all Frontend on Spring with Frontend in React
+     */
+    @Deprecated(forRemoval = true)
     @GetMapping("/properties")
     public ModelAndView properties(){
         ModelAndView model = new ModelAndView("properties");
@@ -70,7 +79,11 @@ public class PropertyController {
         return assembler.toModel(p);
     }
 
-    //TODO:Move this into its own seperate Controller
+    //TODO:Move this into its own separate Controller
+    /**
+     * @deprecated Replacing all Frontend on Spring with Frontend in React
+     */
+    @Deprecated(forRemoval = true)
     @GetMapping("/")
     public ModelAndView index(){
         ModelAndView model = new ModelAndView("index");
